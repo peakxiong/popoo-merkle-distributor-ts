@@ -83,7 +83,7 @@ contract PopIronBank is AccessControlUpgradeable {
 
     function revokeToken(address token, address recipient) public onlyRole(ADMIN_ROLE) {
         uint256 balance = IERC20(token).balanceOf(address(this));
-        require(balance == 0, 'token balance is zero');
+        require(balance >= 0, 'token balance is zero');
         IERC20(token).safeTransfer(recipient, balance);
     }
 
