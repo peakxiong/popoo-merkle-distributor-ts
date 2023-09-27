@@ -6,8 +6,9 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 
-let private_key = [process.env.ADMIN_PK, process.env.SENDER_PK]
+let private_key = [process.env.ADMIN_PK, process.env.SENDER_PK] as string[]
 
+// @ts-ignore
 const config: HardhatUserConfig = {
     solidity: "0.8.19", defaultNetwork: "bscTestnet", networks: {
         localhost: {
@@ -16,7 +17,7 @@ const config: HardhatUserConfig = {
             url: "https://bsc-testnet.nodereal.io/v1/e9a36765eb8a40b9bd12e680a1fd2bc5",
             chainId: 97,
             allowUnlimitedContractSize: true,
-            accounts: process.env.ADMIN_PK !== undefined ? [process.env.ADMIN_PK] : [],
+            accounts: private_key,
         }, bsc: {
             url: "https://bsc-mainnet.nodereal.io/v1/f7c78bdb88e342a390c4427d49a00701", chainId: 56
         }

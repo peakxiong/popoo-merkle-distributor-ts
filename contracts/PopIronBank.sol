@@ -7,12 +7,15 @@ import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
 
-contract PopTreasury is AccessControlUpgradeable {
+contract PopIronBank is AccessControlUpgradeable {
     using SafeMath for uint;
     using SafeERC20 for IERC20;
 
     uint256 public todaySend;
     uint256 public maxSend;
+    uint256 public fee;
+    address public feeAddress;
+
     uint256 public time;
 
     address public PPT;
@@ -21,12 +24,15 @@ contract PopTreasury is AccessControlUpgradeable {
 
     bool private initialized;
 
-    function initialize(address PPTAddress, address admin, address sender, uint256 max) public {
+    function initialize(address PPTAddress, address admin, address sender) public {
         require(!initialized, "Contract instance has already been initialized");
         initialized = true;
         PPT = PPTAddress;
-        maxSend = max;
         time = block.timestamp;
+        feeAddress = admin;
+
+        maxSend = 100000000000000000000000;
+        fee = 1000000000000000000;
 
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
         _grantRole(ADMIN_ROLE, admin);
@@ -35,6 +41,14 @@ contract PopTreasury is AccessControlUpgradeable {
 
     function setMaxSend(uint256 max) public onlyRole(ADMIN_ROLE) {
         maxSend = max;
+    }
+
+    function setNetworkFee(uint256 networkFee) public onlyRole(ADMIN_ROLE) {
+        fee = networkFee;
+    }
+
+    function setNetworkFeeAddress(address recipient) public onlyRole(ADMIN_ROLE) {
+        feeAddress = recipient;
     }
 
     function setPPTAddress(address PPTAddress) public onlyRole(ADMIN_ROLE) {
@@ -57,16 +71,19 @@ contract PopTreasury is AccessControlUpgradeable {
         if (block.timestamp > time + 86400) {
             _flush();
         }
-
+        uint256 totalFee = 0;
         for (uint8 i = 0; i < _to.length; i++) {
             todaySend = todaySend.add(_value[i]);
             require(todaySend <= maxSend, 'daily limit exceeded');
-            IERC20(PPT).safeTransfer(_to[i], _value[i]);
+            IERC20(PPT).safeTransfer(_to[i], _value[i].sub(fee));
+            totalFee = totalFee.add(fee);
         }
+        IERC20(PPT).safeTransfer(feeAddress, totalFee);
     }
 
     function revokeToken(address token, address recipient) public onlyRole(ADMIN_ROLE) {
         uint256 balance = IERC20(token).balanceOf(address(this));
+        require(balance == 0, 'token balance is zero');
         IERC20(token).safeTransfer(recipient, balance);
     }
 
