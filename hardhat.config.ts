@@ -10,7 +10,7 @@ let private_key = [process.env.ADMIN_PK, process.env.SENDER_PK] as string[]
 
 // @ts-ignore
 const config: HardhatUserConfig = {
-    solidity: "0.8.19", defaultNetwork: "bscTestnet", networks: {
+    solidity: "0.8.19", networks: {
         localhost: {
             url: process.env.RPC_URL || "http://localhost:8545", timeout: 180000000, gas: 12000000
         }, bscTestnet: {
