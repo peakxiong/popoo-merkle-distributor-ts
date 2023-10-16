@@ -33,8 +33,10 @@ describe("Pop Iron Bank", () => {
         console.log("popToken", PopToken.target)
 
         let IronBankFac = await ethers.getContractFactory("PopIronBank")
+
+        let start_time = new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000;
         // @ts-ignore
-        IronBank = await upgrades.deployProxy(IronBankFac, [PopToken.target, admin_1.address, sender_1.address], {initializer: 'initialize'})
+        IronBank = await upgrades.deployProxy(IronBankFac, [PopToken.target, admin_1.address, sender_1.address, start_time], {initializer: 'initialize'})
         console.log("IronBank", IronBank.target);
     })
 

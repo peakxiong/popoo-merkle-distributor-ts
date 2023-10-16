@@ -10,7 +10,8 @@ let sender_address = process.env.SENDER !== undefined ? process.env.SENDER : ""
 async function main() {
     const multisend = await ethers.getContractFactory("PopIronBank");
     console.log("Deploying PopIronBank...");
-    const multisend_fac = await upgrades.deployProxy(multisend, [ppt_address, admin_address, sender_address], {initializer: 'initialize'});
+    let start_time = new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000;
+    const multisend_fac = await upgrades.deployProxy(multisend, [ppt_address, admin_address, sender_address, start_time], {initializer: 'initialize'});
     console.log("PopTreasury deployed to:", multisend_fac);
 }
 

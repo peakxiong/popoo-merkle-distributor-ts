@@ -24,11 +24,12 @@ contract PopIronBank is AccessControlUpgradeable {
 
     bool private initialized;
 
-    function initialize(address PPTAddress, address admin, address sender) public {
+    
+    function initialize(address PPTAddress, address admin, address sender, uint256 start_time) public {
         require(!initialized, "Contract instance has already been initialized");
         initialized = true;
         PPT = PPTAddress;
-        time = block.timestamp;
+        time = start_time;
         feeAddress = admin;
 
         maxSend = 100000000000000000000000;
