@@ -20,7 +20,7 @@ async function main() {
 }
 
 async function verify() {
-    let address = "0x40021be80505EDd5b88c6572190587E335Ee3D7E"
+    let address = "0xC1FC30Ca5aB7373159d4d75064F4CEbdcE5349CF"
     await hre.run("verify:verify", {
         address: address
     });
@@ -106,7 +106,7 @@ async function test() {
     // await test_revoke_eth(admin, admin_proxy)
 }
 
-test().catch((error) => {
+main().catch((error) => {
     console.error(error);
     process.exitCode = 1;
 });
